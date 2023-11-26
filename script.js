@@ -1,12 +1,7 @@
 'use strict';
-
-/////////////////////////////////////////////////
-/////////////////////////////////////////////////
-// BANKIST APP
-
 // Data
 const account1 = {
-    owner: 'Jonas Schmedtmann',
+    owner: 'Max Mustermann',
     movements: [200, 450, -400, 3000, -650, -130, 70, 1300],
     interestRate: 1.2, // %
     pin: 1111,
@@ -60,3 +55,17 @@ const inputTransferAmount = document.querySelector('.form__input--amount');
 const inputLoanAmount = document.querySelector('.form__input--loan-amount');
 const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
+
+const displayMovements = function (mov) {
+    mov.forEach(function (oneMov, i) {
+        const type = oneMov > 0 ? "deposit" : "withdrawal"
+
+        const html = `
+          <div class="movements__row">
+            <div class="movements__type movements__type--${type}">${i + 1} ${type}</div>
+            <div class="movements__value">${oneMov}</div>
+        </div>`
+        containerMovements.insertAdjacentElement("afterbegin", html)
+    })
+}
+displayMovements(account1.movements)
