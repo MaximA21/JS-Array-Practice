@@ -64,9 +64,31 @@ const displayMovements = function (mov) {
         const html = `
           <div class="movements__row">
             <div class="movements__type movements__type--${type}">${i + 1} ${type}</div>
-            <div class="movements__value">${oneMov}</div>
+            <div class="movements__value">${oneMov + "€"}</div>
         </div>`;
         containerMovements.insertAdjacentHTML("afterbegin", html)
     })
 }
 displayMovements(account1.movements)
+
+const calcDisplayBalance = function (movements) {
+    labelBalance.textContent = `${movements.reduce((acc, curr) => acc+curr,0)}€`
+}
+calcDisplayBalance(account1.movements)
+
+const calcDisplaySummary = function (movements) {
+    labelSumIn.textContent = `${movements.filter(curr => curr > 0).reduce((acc, curr) => acc + curr,0)}€`
+    labelSumOut.textContent = `${movements.filter(curr => curr < 0).reduce((acc,curr) => acc + Math.abs(curr),0)}€`
+    labelSumInterest.textContent = `${movements.filter(curr => curr > 0).map(curr => curr * 1.2 /100).filter(curr => curr >= 1).reduce((acc, curr) => acc + curr,0)}€`
+}
+calcDisplaySummary(account1.movements)
+
+
+
+
+const createUsernames = function (accs) {
+    accs.forEach(function (acc) {
+    acc.username = acc.owner.toLowerCase().split(" ").map(name => name.at(0)).join("")
+    })
+}
+createUsernames(accounts)
