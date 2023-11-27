@@ -56,9 +56,10 @@ const inputLoanAmount = document.querySelector('.form__input--loan-amount');
 const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
 
-const displayMovements = function (mov) {
+const displayMovements = function (mov, sort = false) {
     containerMovements.innerHTML = ""
-    mov.forEach(function (oneMov, i) {
+    const movs = sort ? mov.slice().sort((a,b) => a-b) : mov
+    movs.forEach(function (oneMov, i) {
         const type = oneMov > 0 ? "deposit" : "withdrawal"
 
         const html = `
@@ -138,8 +139,12 @@ btnLoan.addEventListener("click", function (evt) {
     }
     inputLoanAmount.value = ""
 })
-
-
+let isSorted = false
+btnSort.addEventListener("click", function (evt) {
+    evt.preventDefault()
+    displayMovements(currentAccount.movements, !isSorted)
+    isSorted = !isSorted
+})
 
 
 
