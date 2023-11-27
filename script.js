@@ -128,6 +128,16 @@ btnClose.addEventListener("click", function (evt) {
     inputCloseUsername.value = inputClosePin.value = ""
 })
 
+btnLoan.addEventListener("click", function (evt) {
+    evt.preventDefault()
+    const amount = Number(inputLoanAmount.value)
+
+    if (amount > 0 &&currentAccount.movements.some(mov => mov >= amount * 0.1)) {
+        currentAccount.movements.push(amount)
+        updateUI(currentAccount)
+    }
+    inputLoanAmount.value = ""
+})
 
 
 
