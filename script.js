@@ -69,22 +69,34 @@ const displayMovements = function (mov) {
         containerMovements.insertAdjacentHTML("afterbegin", html)
     })
 }
-displayMovements(account1.movements)
-
 const calcDisplayBalance = function (movements) {
     labelBalance.textContent = `${movements.reduce((acc, curr) => acc+curr,0)}€`
 }
-calcDisplayBalance(account1.movements)
-
-const calcDisplaySummary = function (movements) {
-    labelSumIn.textContent = `${movements.filter(curr => curr > 0).reduce((acc, curr) => acc + curr,0)}€`
-    labelSumOut.textContent = `${movements.filter(curr => curr < 0).reduce((acc,curr) => acc + Math.abs(curr),0)}€`
-    labelSumInterest.textContent = `${movements.filter(curr => curr > 0).map(curr => curr * 1.2 /100).filter(curr => curr >= 1).reduce((acc, curr) => acc + curr,0)}€`
+const calcDisplaySummary = function (acc) {
+    labelSumIn.textContent = `${acc.movements.filter(curr => curr > 0).reduce((acc, curr) => acc + curr,0)}€`
+    labelSumOut.textContent = `${acc.movements.filter(curr => curr < 0).reduce((acc,curr) => acc + Math.abs(curr),0)}€`
+    labelSumInterest.textContent = `${acc.movements.filter(curr => curr > 0).map(curr => curr * acc.interestRate /100).filter(curr => curr >= 1).reduce((acc, curr) => acc + curr,0)}€`
 }
-calcDisplaySummary(account1.movements)
 
+let currentAccount
+btnLogin.addEventListener("click", function (evt) {
+    //prevent form from submitting
+    evt.preventDefault()
+    currentAccount = accounts.find(acc => acc.username === inputLoginUsername.value)
 
+    if (currentAccount?.pin === Number(inputLoginPin.value)) {
+        labelWelcome.textContent = `Welcome back ${currentAccount.owner.split(" ").at(0)}`
+        containerApp.style.opacity = 100
 
+        calcDisplaySummary(currentAccount)
+        displayMovements(currentAccount.movements)
+        calcDisplayBalance(currentAccount.movements)
+
+        inputLoginUsername.value = inputLoginPin.value = ""
+        inputLoginUsername.blur()
+        inputLoginPin.blur()
+    }
+})
 
 const createUsernames = function (accs) {
     accs.forEach(function (acc) {
