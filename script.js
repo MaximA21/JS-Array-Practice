@@ -79,6 +79,12 @@ const calcDisplaySummary = function (acc) {
     labelSumInterest.textContent = `${acc.movements.filter(curr => curr > 0).map(curr => curr * acc.interestRate /100).filter(curr => curr >= 1).reduce((acc, curr) => acc + curr,0)}€`
 }
 
+const updateUI = function (acc) {
+    calcDisplaySummary(acc)
+    displayMovements(acc.movements)
+    calcDisplayBalance(acc)
+}
+
 let currentAccount
 btnLogin.addEventListener("click", function (evt) {
     //prevent form from submitting
@@ -89,9 +95,7 @@ btnLogin.addEventListener("click", function (evt) {
         labelWelcome.textContent = `Welcome back ${currentAccount.owner.split(" ").at(0)}`
         containerApp.style.opacity = "100"
 
-        calcDisplaySummary(currentAccount)
-        displayMovements(currentAccount.movements)
-        calcDisplayBalance(currentAccount)
+        updateUI(currentAccount)
 
         inputLoginUsername.value = inputLoginPin.value = ""
         inputLoginUsername.blur()
@@ -103,9 +107,13 @@ btnTransfer.addEventListener("click", function (e) {
     e.preventDefault()
     const amount = Number(inputTransferAmount.value)
     const receiverAccount = accounts.find(acc => acc.username === inputTransferTo.value)
+    inputTransferAmount.value = inputTransferTo.value = ""
 
     if (amount > 0 && receiverAccount && currentAccount.balance >= amount && receiverAccount.username !== currentAccount.username) {
-        console.log("Mega")
+        currentAccount.movements.push(-amount)
+        receiverAccount.movements.push(amount)
+
+        updateUI(currentAccount)
     }
 })
 
