@@ -92,7 +92,7 @@ btnLogin.addEventListener("click", function (evt) {
     evt.preventDefault()
     currentAccount = accounts.find(acc => acc.username === inputLoginUsername.value)
 
-    if (currentAccount?.pin === Number(inputLoginPin.value)) {
+    if (currentAccount?.pin === +inputLoginPin.value) {
         labelWelcome.textContent = `Welcome back ${currentAccount.owner.split(" ").at(0)}`
         containerApp.style.opacity = "100"
 
@@ -106,7 +106,7 @@ btnLogin.addEventListener("click", function (evt) {
 
 btnTransfer.addEventListener("click", function (e) {
     e.preventDefault()
-    const amount = Number(inputTransferAmount.value)
+    const amount = +inputTransferAmount.value
     const receiverAccount = accounts.find(acc => acc.username === inputTransferTo.value)
     inputTransferAmount.value = inputTransferTo.value = ""
 
@@ -121,7 +121,7 @@ btnTransfer.addEventListener("click", function (e) {
 btnClose.addEventListener("click", function (evt) {
     evt.preventDefault()
 
-    if (inputCloseUsername.value === currentAccount.username && Number(inputClosePin.value) === currentAccount.pin) {
+    if (inputCloseUsername.value === currentAccount.username && +inputClosePin.value === currentAccount.pin) {
         const index = accounts.findIndex(acc => acc.username === currentAccount.username)
         accounts.splice(index, 1)
         containerApp.style.opacity = "0"
@@ -131,7 +131,7 @@ btnClose.addEventListener("click", function (evt) {
 
 btnLoan.addEventListener("click", function (evt) {
     evt.preventDefault()
-    const amount = Number(inputLoanAmount.value)
+    const amount = +inputLoanAmount.value
 
     if (amount > 0 &&currentAccount.movements.some(mov => mov >= amount * 0.1)) {
         currentAccount.movements.push(amount)
