@@ -69,8 +69,9 @@ const displayMovements = function (mov) {
         containerMovements.insertAdjacentHTML("afterbegin", html)
     })
 }
-const calcDisplayBalance = function (movements) {
-    labelBalance.textContent = `${movements.reduce((acc, curr) => acc+curr,0)}€`
+const calcDisplayBalance = function (acc) {
+    acc.balance = acc.movements.reduce((acc, curr) => acc+curr,0)
+    labelBalance.textContent = `${acc.balance}€`
 }
 const calcDisplaySummary = function (acc) {
     labelSumIn.textContent = `${acc.movements.filter(curr => curr > 0).reduce((acc, curr) => acc + curr,0)}€`
@@ -86,17 +87,32 @@ btnLogin.addEventListener("click", function (evt) {
 
     if (currentAccount?.pin === Number(inputLoginPin.value)) {
         labelWelcome.textContent = `Welcome back ${currentAccount.owner.split(" ").at(0)}`
-        containerApp.style.opacity = 100
+        containerApp.style.opacity = "100"
 
         calcDisplaySummary(currentAccount)
         displayMovements(currentAccount.movements)
-        calcDisplayBalance(currentAccount.movements)
+        calcDisplayBalance(currentAccount)
 
         inputLoginUsername.value = inputLoginPin.value = ""
         inputLoginUsername.blur()
         inputLoginPin.blur()
     }
 })
+
+btnTransfer.addEventListener("click", function (e) {
+    e.preventDefault()
+    const amount = Number(inputTransferAmount.value)
+    const receiverAccount = accounts.find(acc => acc.username === inputTransferTo.value)
+
+    if (amount > 0 && receiverAccount && currentAccount.balance >= amount && receiverAccount.username !== currentAccount.username) {
+        console.log("Mega")
+    }
+})
+
+
+
+
+
 
 const createUsernames = function (accs) {
     accs.forEach(function (acc) {
