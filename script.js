@@ -119,7 +119,7 @@ const updateUI = function (acc) {
     calcDisplayBalance(acc)
 }
 
-let currentAccount
+let currentAccount, timer
 btnLogin.addEventListener("click", function (evt) {
     //prevent form from submitting
     evt.preventDefault()
@@ -139,7 +139,8 @@ btnLogin.addEventListener("click", function (evt) {
       //  const local = navigator.language
         labelDate.textContent = new Intl.DateTimeFormat(currentAccount.locale, options).format(now)
 
-
+        if (timer) clearInterval(timer)
+        timer = startLogOutTimer()
         updateUI(currentAccount)
 
         inputLoginUsername.value = inputLoginPin.value = ""
@@ -161,6 +162,8 @@ btnTransfer.addEventListener("click", function (e) {
         receiverAccount.movementsDates.push(new Date().toISOString())
 
         updateUI(currentAccount)
+        clearInterval(timer)
+        timer = startLogOutTimer()
     }
 })
 
@@ -180,9 +183,13 @@ btnLoan.addEventListener("click", function (evt) {
     const amount = Math.floor(inputLoanAmount.value)
 
     if (amount > 0 &&currentAccount.movements.some(mov => mov >= amount * 0.1)) {
-        currentAccount.movements.push(amount)
-        currentAccount.movementsDates.push(new Date().toISOString())
-        updateUI(currentAccount)
+      setTimeout( function () {
+          currentAccount.movements.push(amount)
+          currentAccount.movementsDates.push(new Date().toISOString())
+          updateUI(currentAccount)
+          clearInterval(timer)
+          timer = startLogOutTimer()
+      }, 3000)
     }
     inputLoanAmount.value = ""
 })
@@ -192,6 +199,24 @@ btnSort.addEventListener("click", function (evt) {
     displayMovements(currentAccount, !isSorted)
     isSorted = !isSorted
 })
+
+const startLogOutTimer = function () {
+    const tick = function () {
+        const min = String(Math.trunc(time / 60)).padStart(2, "0")
+        const sec = String(time % 60).padStart(2, "0")
+        labelTimer.textContent = `${min}:${sec}`
+        if (time === 0) {
+            clearInterval(timer)
+            labelWelcome.textContent = `Log in to get started`
+            containerApp.style.opacity = "0"
+        }
+        time--
+    }
+    let time = 100
+    tick()
+    const timer = setInterval(tick ,1000)
+    return timer
+}
 
 
 
