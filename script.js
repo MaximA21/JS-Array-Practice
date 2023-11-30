@@ -75,7 +75,13 @@ const displayMovements = function (acc, sort = false) {
     const movs = sort ? acc.movements.slice().sort((a,b) => a-b) : acc.movements
     movs.forEach(function (oneMov, i) {
         const type = oneMov > 0 ? "deposit" : "withdrawal"
+
+        //date
         const date = new Date(acc.movementsDates.at(i))
+        const day = `${date.getDate()}`.padStart(2, "0")
+        const month = `${date.getMonth() + 1}`.padStart(2, "0")
+        const year = date.getFullYear()
+        const displayDate = `${day}/${month}/${year}`
 
 
         const html = `
