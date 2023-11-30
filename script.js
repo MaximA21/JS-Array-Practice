@@ -79,7 +79,10 @@ const formatMovementDate = function (date, locale) {
     if (daysPassed === 1) return "Yesterday"
     if (daysPassed <= 7) return `${daysPassed} days ago`
     return new Intl.DateTimeFormat(locale).format(date)
+}
 
+const formatCurr = function (value, locale, curr) {
+    return new Intl.NumberFormat(locale, {style: "currency", currency: curr}).format(value)
 }
 
 const displayMovements = function (acc, sort = false) {
@@ -95,19 +98,19 @@ const displayMovements = function (acc, sort = false) {
           <div class="movements__row">
             <div class="movements__type movements__type--${type}">${i + 1} ${type}</div>
              <div class="movements__date">${displayDate}</div>
-            <div class="movements__value">${oneMov.toFixed(2) + "€"}</div>
+            <div class="movements__value">${formatCurr(oneMov,acc.locale,acc.currency)}</div>
         </div>`;
         containerMovements.insertAdjacentHTML("afterbegin", html)
     })
 }
 const calcDisplayBalance = function (acc) {
     acc.balance = acc.movements.reduce((acc, curr) => acc+curr,0)
-    labelBalance.textContent = `${acc.balance.toFixed(2)}€`
+    labelBalance.textContent = formatCurr(acc.balance, acc.locale, acc.currency)
 }
 const calcDisplaySummary = function (acc) {
-    labelSumIn.textContent = `${(acc.movements.filter(curr => curr > 0).reduce((acc, curr) => acc + curr,0)).toFixed(2)}€`
-    labelSumOut.textContent = `${(acc.movements.filter(curr => curr < 0).reduce((acc,curr) => acc + Math.abs(curr),0)).toFixed(2)}€`
-    labelSumInterest.textContent = `${(acc.movements.filter(curr => curr > 0).map(curr => curr * acc.interestRate /100).filter(curr => curr >= 1).reduce((acc, curr) => acc + curr,0)).toFixed(2)}€`
+    labelSumIn.textContent = formatCurr(acc.movements.filter(curr => curr > 0).reduce((acc, curr) => acc + curr,0), acc.locale, acc.currency)
+    labelSumOut.textContent = formatCurr(acc.movements.filter(curr => curr < 0).reduce((acc,curr) => acc + Math.abs(curr),0) , acc.locale, acc.currency)
+    labelSumInterest.textContent = formatCurr(acc.movements.filter(curr => curr > 0).map(curr => curr * acc.interestRate /100).filter(curr => curr >= 1).reduce((acc, curr) => acc + curr,0), acc.locale, acc.currency)
 }
 
 const updateUI = function (acc) {
