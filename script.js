@@ -113,6 +113,14 @@ btnLogin.addEventListener("click", function (evt) {
         labelWelcome.textContent = `Welcome back ${currentAccount.owner.split(" ").at(0)}`
         containerApp.style.opacity = "100"
 
+        //Display date
+        const now = new Date()
+        const day = `${now.getDate()}`.padStart(2, "0")
+        const month = `${now.getMonth() + 1}`.padStart(2, "0")
+        const year = now.getFullYear()
+        labelDate.textContent = `${day}/${month}/${year}`
+
+
         updateUI(currentAccount)
 
         inputLoginUsername.value = inputLoginPin.value = ""
